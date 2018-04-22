@@ -1,0 +1,44 @@
+{
+  "name": "remail",
+  "version": "0.0.1",
+  "description": "Email component library",
+  "module": "index.js",
+  "main": "index.js",
+  "bin": {
+    "remail": "./bin.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/the-couch/remail.git"
+  },
+  "keywords": [
+    "email",
+    "react",
+    "html",
+    "email",
+    "components"
+  ],
+  "author": "estrattonbailey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/the-couch/remail/issues"
+  },
+  "homepage": "https://github.com/the-couch/remail#readme",
+  "dependencies": {
+    "@babel/core": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "@babel/preset-react": "^7.0.0-beta.44",
+    "@babel/register": "^7.0.0-beta.44",
+    "chalk": "^2.4.0",
+    "chokidar": "^2.0.3",
+    "classnames": "^2.2.5",
+    "clipboardy": "^1.2.3",
+    "fs-extra": "^5.0.0",
+    "minimist": "^1.2.0",
+    "node-cmd": "^3.0.0",
+    "prop-types": "^15.6.1",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  }
+}
