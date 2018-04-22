@@ -1,6 +1,6 @@
 {
   "name": "remail",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Email component library",
   "module": "index.js",
   "main": "index.js",
