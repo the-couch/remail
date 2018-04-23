@@ -17,13 +17,6 @@ const outDir = _[2] || 'dist'
 const outDirPath = path.resolve(cwd, outDir)
 const outFilePath = path.resolve(outDir, fileName)
 
-// console.log('mode', mode)
-// console.log('filePath', filePath)
-// console.log('fileName', fileName)
-// console.log('outDir', outDir)
-// console.log('outDirPath', outDirPath)
-// console.log('outFilePath', outFilePath)
-
 const Template = require(filePath).default
 
 function render(changedFilePath) {
@@ -69,7 +62,7 @@ if (mode === 'build') {
   )
 
   function renderChange () {
-    cmd.get(`clare build ${filePath} ${outDir}`, (err, data, stderr) => {
+    cmd.get(`remail build ${filePath} ${outDir}`, (err, data, stderr) => {
       if (err) console.log(chalk.red('error'), err)
 
       console.log(
@@ -85,7 +78,8 @@ if (mode === 'build') {
   chokidar.watch(cwd, {
     ignored: [
       /(^|[\/\\])\../,
-      /node_modules/
+      /node_modules/,
+      outDirPath
     ]
   })
     .on('ready', renderChange)

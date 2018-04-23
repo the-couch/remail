@@ -8,6 +8,7 @@ import Table from './components/Table.js'
 import Type, { createType } from './components/Type.js'
 import Columns from './components/Columns.js'
 import Image from './components/Image.js'
+import Raw from './components/Raw.js'
 
 function render (comp) {
   return renderToStaticMarkup(comp)
@@ -22,5 +23,6 @@ export {
   createType,
   Columns,
   Image,
+  Raw,
   render
 }
