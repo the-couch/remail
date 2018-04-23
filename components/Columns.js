@@ -8,7 +8,7 @@ export default function Columns ({ wrap, className, children, ...props }) {
       <tr>
         {children.map(c => {
           return (
-            <td className={cx('column', {
+            <td key={c} className={cx('column', {
               'column--wrap': wrap
             })}>{c}</td>
           )

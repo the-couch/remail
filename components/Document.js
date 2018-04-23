@@ -16,8 +16,6 @@ export default function Document ({
   bodyCSS,
   background,
   style,
-  width = 600,
-  gutter = 16,
   children
 }) {
   return (

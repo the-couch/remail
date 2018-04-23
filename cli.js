@@ -17,12 +17,12 @@ const outDir = _[2] || 'dist'
 const outDirPath = path.resolve(cwd, outDir)
 const outFilePath = path.resolve(outDir, fileName)
 
-console.log('mode', mode)
-console.log('filePath', filePath)
-console.log('fileName', fileName)
-console.log('outDir', outDir)
-console.log('outDirPath', outDirPath)
-console.log('outFilePath', outFilePath)
+// console.log('mode', mode)
+// console.log('filePath', filePath)
+// console.log('fileName', fileName)
+// console.log('outDir', outDir)
+// console.log('outDirPath', outDirPath)
+// console.log('outFilePath', outFilePath)
 
 const Template = require(filePath).default
 

@@ -20,7 +20,7 @@ export default function Img ({ src, alt, href, width, height, style, ...props })
   )
 
   return (
-    <Box {...props}>
+    <Box width={width} {...props}>
       {href ? (
         <A href={href} title={alt}>{img}</A>
       ) : (
