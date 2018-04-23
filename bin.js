@@ -2,6 +2,10 @@
 'use strict'
 
 require('@babel/register')({
+  only: [
+    /remail/,
+    process.cwd()
+  ],
   plugins: [
     require.resolve('@babel/plugin-proposal-object-rest-spread')
   ],

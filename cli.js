@@ -1,83 +1,93 @@
-const fs = require('fs-extra')
-const path = require('path')
-const chokidar = require('chokidar')
-const React = require('react')
-const { render: renderEmail } = require('./index.js')
-const clipboardy = require('clipboardy')
-const chalk = require('chalk')
-const cmd = require('node-cmd')
+import fs from 'fs-extra'
+import path from 'path'
+import chokidar from 'chokidar'
+import React from 'react'
+import { render as renderEmail } from './index.js'
+import clipboardy from 'clipboardy'
+import chalk from 'chalk'
+import cmd from 'node-cmd'
 
-// import fs from 'fs-extra'
-// import path from 'path'
-// import chokidar from 'chokidar'
-// import React from 'react'
-// import { render as renderEmail } from './index.js'
-// import clipboardy from 'clipboardy'
-// import chalk from 'chalk'
-// import cmd from 'node-cmd'
-
-const { _, mock } = require('minimist')(process.argv.slice(2))
+const { _, ...props } = require('minimist')(process.argv.slice(2))
 
 const mode = _[0]
-const file = path.resolve(_[1])
-const filename = path.basename(file).split('.')[0] + '.html'
-const outfile = path.resolve(__dirname, 'dist', filename)
+const cwd = process.cwd()
+const filePath = path.resolve(cwd, _[1])
+const fileName = path.basename(filePath).split('.')[0] + '.html'
+const outDir = _[2] || 'dist'
+const outDirPath = path.resolve(cwd, outDir)
+const outFilePath = path.resolve(outDir, fileName)
 
-let Template = require(file).default
+console.log('mode', mode)
+console.log('filePath', filePath)
+console.log('fileName', fileName)
+console.log('outDir', outDir)
+console.log('outDirPath', outDirPath)
+console.log('outFilePath', outFilePath)
 
-function render(changedPath) {
-  delete require.cache[file]
-  Template = require(file).default
+const Template = require(filePath).default
 
-  fs.outputFile(outfile, renderEmail(<Template mock />), err => {
+function render(changedFilePath) {
+  // delete require.cache[file]
+  // Template = require(file).default
+
+  fs.outputFile(outFilePath, renderEmail(<Template {...props} />), err => {
     if (err) console.log(chalk.red('error'), err)
 
     console.log(
       chalk.inverse('clare-emails'),
-      chalk.green('rendered'),
-      filename,
+      chalk.green('built'),
+      fileName,
       chalk.green('to'),
-      'dist'
+      outDir
     )
   })
 }
 
 if (mode === 'build') {
-  if (mock) {
-    render()
-  } else {
-    clipboardy.writeSync(renderEmail(<Template />))
+  console.log(
+    chalk.inverse('clare-emails'),
+    chalk.green('building to'),
+    outDir
+  )
 
-    console.log(
-      chalk.inverse('clare-emails'),
-      chalk.green('rendered'),
-      filename,
-      chalk.green('to'),
-      'clipboard'
-    )
-  }
+  render()
+} else if (mode === 'copy') {
+  clipboardy.writeSync(renderEmail(<Template {...props} />))
+
+  console.log(
+    chalk.inverse('clare-emails'),
+    chalk.green('built'),
+    fileName,
+    chalk.green('to'),
+    'clipboard'
+  )
 } else if (mode === 'watch') {
   console.log(
     chalk.inverse('clare-emails'),
     chalk.green('watching'),
-    filename
+    fileName
   )
 
   function renderChange () {
-    cmd.get(`clare build ${file} --mock`, (err, data, stderr) => {
-      if (err) console.log(err)
+    cmd.get(`clare build ${filePath} ${outDir}`, (err, data, stderr) => {
+      if (err) console.log(chalk.red('error'), err)
 
       console.log(
         chalk.inverse('clare-emails'),
-        chalk.green('rendered'),
-        filename,
+        chalk.green('built'),
+        fileName,
         chalk.green('to'),
-        'dist'
+        outDir
       )
     })
   }
 
-  chokidar.watch(['components/*.js', 'templates/*.js', 'styles/*.js'])
+  chokidar.watch(cwd, {
+    ignored: [
+      /(^|[\/\\])\../,
+      /node_modules/
+    ]
+  })
     .on('ready', renderChange)
     .on('change', renderChange)
 }

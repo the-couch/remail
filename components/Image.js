@@ -2,7 +2,7 @@ import React from 'react'
 import A from './A.js'
 import Box from './Box.js'
 
-export default function Img ({ src, alt, href, width, height, ...props }) {
+export default function Img ({ src, alt, href, width, height, style, ...props }) {
   const img = (
     <img
       alt={alt}

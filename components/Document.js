@@ -9,7 +9,7 @@ const bodyStyle = {
   MsTextSizeAdjust: '100%',
 }
 
-export default function Email ({
+export default function Document ({
   lang = 'en',
   title,
   headCSS,
@@ -37,6 +37,6 @@ export default function Email ({
   )
 }
 
-Email.PropTypes = {
-  title: PropTypes.string.required
+Document.propTypes = {
+  title: PropTypes.string.isRequired
 }
