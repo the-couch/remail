@@ -13,6 +13,7 @@ export default function Type ({
   bold,
   fontSize = 16,
   lineHeight = 1.4,
+  className,
   children,
   ...props
 }) {
@@ -26,13 +27,15 @@ export default function Type ({
       msoLineHeightRule: 'exactly',
       color: 'inherit',
       fontWeight: bold ? 'bold' : 'normal',
-      fontStyle: italic ? 'italic' : 'normal'
+      fontStyle: italic ? 'italic' : 'normal',
+      display: 'inline-block',
+      width: '100%'
     }, style)
   }
 
   return (
     <Box center={center} right={right} {...props}>
-      <span {...attrs}>{children}</span>
+      <span {...attrs} className={className}>{children}</span>
     </Box>
   )
 }

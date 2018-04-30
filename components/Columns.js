@@ -1,19 +1,15 @@
 import React from 'react'
 import cx from 'classnames'
-import Box from './Box.js'
+import Table from './Table.js'
 
-export default function Columns ({ wrap, className, children, ...props }) {
+export default function Columns ({ className, children, ...props }) {
   return (
-    <Box className={cx(className, 'columns')} {...props}>
+    <Table className={cx(className, 'columns')} {...props} style={{
+      tableLayout: 'auto' // override default of 'fixed'
+    }}>
       <tr>
-        {children.map(c => {
-          return (
-            <td key={c} className={cx('column', {
-              'column--wrap': wrap
-            })}>{c}</td>
-          )
-        })}
+        {children}
       </tr>
-    </Box>
+    </Table>
   )
 }

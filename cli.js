@@ -20,9 +20,6 @@ const outFilePath = path.resolve(outDir, fileName)
 const Template = require(filePath).default
 
 function render(changedFilePath) {
-  // delete require.cache[file]
-  // Template = require(file).default
-
   fs.outputFile(outFilePath, renderEmail(<Template {...props} />), err => {
     if (err) console.log(chalk.red('error'), err)
 
@@ -64,6 +61,8 @@ if (mode === 'build') {
   function renderChange () {
     cmd.get(`remail build ${filePath} ${outDir}`, (err, data, stderr) => {
       if (err) console.log(chalk.red('error'), err)
+
+      if (stderr) console.log(stderr)
 
       console.log(
         chalk.inverse('clare-emails'),

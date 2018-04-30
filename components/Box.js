@@ -14,12 +14,14 @@ export default function Box({
   space,
   background,
   children,
+  innerProps = {},
   ...props
 }) {
   return (
     <Table {...props}>
       <tr>
         <td
+          {...innerProps}
           bgcolor={background}
           style={Object.assign(
             space ? { padding: padding(space) } : {}
