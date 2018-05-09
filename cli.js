@@ -6,81 +6,106 @@ import { render as renderEmail } from './index.js'
 import clipboardy from 'clipboardy'
 import chalk from 'chalk'
 import cmd from 'node-cmd'
+import decache from 'decache'
 
-const { _, ...props } = require('minimist')(process.argv.slice(2))
+const {
+  _: files,
+  c,
+  w,
+  o,
+  data,
+  ...props
+} = require('minimist')(process.argv.slice(2))
 
-const mode = _[0]
 const cwd = process.cwd()
-const filePath = path.resolve(cwd, _[1])
-const fileName = path.basename(filePath).split('.')[0] + '.html'
-const outDir = _[2] || 'dist'
+const outDir = o || 'dist'
 const outDirPath = path.resolve(cwd, outDir)
-const outFilePath = path.resolve(outDir, fileName)
 
-const Template = require(filePath).default
+const dataObject = data ? require(path.resolve(cwd, data)).default : null
 
-function render(changedFilePath) {
-  fs.outputFile(outFilePath, renderEmail(<Template {...props} />), err => {
-    if (err) console.log(chalk.red('error'), err)
-
-    console.log(
-      chalk.inverse('clare-emails'),
-      chalk.green('built'),
-      fileName,
-      chalk.green('to'),
-      outDir
-    )
-  })
+function render (filepath) {
+  const Template = require(filepath).default
+  return renderEmail(<Template {...props} data={dataObject} />)
 }
 
-if (mode === 'build') {
+function build (paths) {
   console.log(
-    chalk.inverse('clare-emails'),
-    chalk.green('building to'),
+    chalk.inverse('remail'),
+    chalk.green(`building ${paths.length} emails to`),
     outDir
   )
 
-  render()
-} else if (mode === 'copy') {
-  clipboardy.writeSync(renderEmail(<Template {...props} />))
-
-  console.log(
-    chalk.inverse('clare-emails'),
-    chalk.green('built'),
-    fileName,
-    chalk.green('to'),
-    'clipboard'
-  )
-} else if (mode === 'watch') {
-  console.log(
-    chalk.inverse('clare-emails'),
-    chalk.green('watching'),
-    fileName
-  )
-
-  function renderChange () {
-    cmd.get(`remail build ${filePath} ${outDir}`, (err, data, stderr) => {
+  paths.map(f => {
+    fs.outputFile(path.resolve(outDir, f[1]), render(f[0]), err => {
       if (err) console.log(chalk.red('error'), err)
 
-      if (stderr) console.log(stderr)
-
       console.log(
-        chalk.inverse('clare-emails'),
+        chalk.inverse('remail'),
         chalk.green('built'),
-        fileName,
+        f[1],
         chalk.green('to'),
         outDir
       )
     })
+  })
+}
+
+function copy (paths) {
+  if (paths.length > 1) {
+    console.log(
+      chalk.inverse('remail'),
+      chalk.magenta('copying first file only')
+    )
   }
 
-  chokidar.watch(cwd, {
-    ignored: [
-      /(^|[\/\\])\../,
-      /node_modules/,
-      outDirPath
+  const file = paths[0]
+  const Template = require(file[0]).default
+
+  clipboardy.writeSync(render(file[0]))
+
+  console.log(
+    chalk.inverse('remail'),
+    chalk.green('copied'),
+    file[1],
+    chalk.green('to'),
+    'clipboard'
+  )
+}
+
+function run (watching) {
+  const paths = files.map(f => {
+    return [
+      path.resolve(cwd, f),
+      path.basename(f).split('.')[0] + '.html'
     ]
   })
-    .on('ready', renderChange)
-    .on('change', renderChange)
+
+  // console.log(paths)
+
+  if (watching || (!c && !w)) {
+    build(paths)
+  } else if (c) {
+    copy(paths)
+  } else if (w) {
+    console.log(
+      chalk.inverse('remail'),
+      chalk.green(`watching ${paths.length} emails`)
+    )
+
+    chokidar.watch(cwd, {
+      ignored: [
+        /(^|[\/\\])\../,
+        /node_modules/,
+        outDirPath
+      ]
+    })
+      .on('ready', () => run(true))
+      .on('change', path => {
+        decache(path)
+        paths.map(p => decache(p[0]))
+        run(true)
+      })
+  }
 }
+
+run()
